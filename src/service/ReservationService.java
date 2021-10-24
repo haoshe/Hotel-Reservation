@@ -103,9 +103,14 @@ public class ReservationService {
         return false;
     }
 
-    public Collection<Reservation> getCustomerReservation(Customer customer){
-         CustomerService.getInstance().getCustomer(customer.getEmail());
-         return reservations;
+    public Reservation getCustomerReservation(String email){
+        // CustomerService.getInstance().getCustomer(customer.getEmail());
+        for(Reservation reservation : reservations){
+            if(reservation.getCustomer().getEmail().equals(email)){
+                return reservation;
+            }
+        }
+         return null;
     }
 
     public static Collection<IRoom> getAllRooms(){

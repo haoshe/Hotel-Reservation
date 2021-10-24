@@ -6,6 +6,7 @@ import model.RoomType;
 import service.CustomerService;
 import service.ReservationService;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class AdminMenu {
    // private static final ReservationService reservationService = ReservationService.getInstance();
     private static Scanner scanner;
 
-    public static void printAdminMenu(){
+    public static void printAdminMenu() throws ParseException {
         System.out.println(
                 "\nAdmin Menu\n" +
                 "--------------------------------------------\n" +
@@ -56,6 +57,7 @@ public class AdminMenu {
                     break;
                 case 6:
                     MainMenu.printMainMenu();
+                    MainMenu.mainMenu();
                     quit = true;
                     break;
             }
