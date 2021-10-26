@@ -1,7 +1,9 @@
 package service;
 
 import model.*;
+import utilities.Utilities;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ReservationService {
@@ -77,30 +79,31 @@ public class ReservationService {
         return availableRooms;
     }
 
-
+    // check if the room is in the reserved rooms list judging by the input dates, return true if it is reserved for the input dates.
     private static boolean isReserved(IRoom room, Date checkInDate, Date checkOutDate){
-        // create a list for not available rooms
-        // loop through each reservation in reservations list.
-        // first check the dates, if the input dates fall between any reserved dates, or reserved dates are between the new input dates,
-        // or the input checkout date falls between reserved dates, or input check in date falls between reserved dates
-        // it means whichever room in the reservation list is not available for the input dates.
-        // add that room to the not available rooms list.
-        // then check each room in the rooms list, if a room from rooms list is in the not available list, means the room is reserved for the input dates, return true. Otherwise, return false.
-        List<IRoom> notAvailableRooms = new ArrayList<>();
-        for(Reservation reservation : reservations){
-
-            if(checkInDate.compareTo(reservation.getCheckInDate())>=0 && checkOutDate.compareTo(reservation.getCheckOutDate())<=0 // fall between reserved dates
-               || checkInDate.compareTo(reservation.getCheckInDate())<=0 && checkOutDate.compareTo(reservation.getCheckOutDate())>=0// input dates include reserved dates
-                || checkInDate.compareTo(reservation.getCheckOutDate())<0 && checkOutDate.compareTo(reservation.getCheckOutDate())<=0// input checkout date falls between reserved dates
-                || checkInDate.compareTo(reservation.getCheckInDate())>=0 && checkOutDate.compareTo(reservation.getCheckOutDate())>=0// input checkin date falls between reserved dates
-            ){
-                notAvailableRooms.add(reservation.getRoom());
+        // if reservation list is not empty, loop through each reservation in reservations list.
+        // check if the room is in the reserved list
+        // first check the dates, if the input check out date is before the reserved check in date,
+        // or the input check in date is after the reserved check out date
+        // it means the room in the reservation list is available for the input dates.
+        if(!reservations.isEmpty()){
+            for(Reservation reservation : reservations) {
+                if(reservation.getRoom().equals(room)){
+                    LocalDateTime resevredCheckInDate = Utilities.convertToLocalDateTimeViaInstant(reservation.getCheckInDate());
+                    LocalDateTime reservedCheckOutDate = Utilities.convertToLocalDateTimeViaInstant(reservation.getCheckOutDate());
+                    LocalDateTime checkIn = Utilities.convertToLocalDateTimeViaInstant(checkInDate);
+                    LocalDateTime checkOut = Utilities.convertToLocalDateTimeViaInstant(checkOutDate);
+                    if (checkOut.isBefore(resevredCheckInDate) || checkIn.isAfter(reservedCheckOutDate)) {
+                        return false;//is not reserved
+                    }
+                    return true; // is reserved
+                }else{
+                    return false;
+                }
             }
         }
-        if(notAvailableRooms.contains(room)){
-            return true;
-        }
-        return false;
+
+        return false;// reservation list is empty, so is not reserved
     }
 
     public Reservation getCustomerReservation(String email){

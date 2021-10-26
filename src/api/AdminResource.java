@@ -37,10 +37,11 @@ public class AdminResource {
      *
      * @param rooms
      */
-    public void addRoom(List<IRoom> rooms){
-        for(IRoom room : rooms){
-            reservationService.addRoom(room);
-        }
+    public boolean addRoom(IRoom room){
+      // for(IRoom room : rooms){
+            return reservationService.addRoom(room);
+       //}
+      //  return false;
     }
 
     /**
@@ -53,7 +54,7 @@ public class AdminResource {
         return reservationService.getAllRooms();
     }
 
-    public void getAllCustomers(){
+    public static void getAllCustomers(){
         System.out.println(customerService.getAllCustomers());
     }
 
