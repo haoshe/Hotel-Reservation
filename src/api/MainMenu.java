@@ -48,9 +48,20 @@ public class MainMenu {
                         "Please select a number for the menu option\n");
         boolean quit = false;
         int option;
+
+
         while(!quit){
-            option = scanner.nextInt();
-            scanner.nextLine();
+            while(true){
+                boolean isInt = scanner.hasNextInt();
+                if(isInt){
+                    option = scanner.nextInt();
+                    scanner.nextLine();
+                    break;
+                }
+                option = 6;// if input is not a int, assign a number larger than 5, so the default case can catch it.
+                scanner.nextLine();
+                break;
+            }
             switch(option){
                 case 1:
                     findARoom();
@@ -68,7 +79,6 @@ public class MainMenu {
                     AdminMenu.start();
                     break;
                 case 5:
-                   // break outerLoop;
                     System.out.println("logging out...");
                     System.exit(0);
                     quit = true;
@@ -148,23 +158,52 @@ public class MainMenu {
                 }
             }
 
-            if(Utilities.isRoomAvailable(checkInDate,checkOutDate)){
-                Utilities.displayAvailableRooms(checkInDate,checkOutDate);
-                reserveARoom(checkInDate,checkOutDate);
+            if(Utilities.isRoomAvailable(checkInDate,checkOutDate)) {
+                Utilities.displayAvailableRooms(checkInDate, checkOutDate);
+                reserveARoom(checkInDate, checkOutDate);
                 continueFlag = false;
             }else{
-                System.out.println("There is no room available within these dates.");
+                System.out.println("There is no room available within your chosen dates.\n\n");
+
+
+
+ // This part of code for booking rooms 7 days later has a bug. the room keeps showing up even it has been reserved. I can't fix it.
+//                Date newCheckInDate = Utilities.plus7DaysToInputDate(checkInDate);
+//                Date newCheckOutDate = Utilities.plus7DaysToInputDate(checkOutDate);
+//                if(Utilities.isRoomAvailable(newCheckInDate,newCheckOutDate)){
+//                    System.out.println("These rooms are available from "+newCheckInDate+" to " + newCheckOutDate + ", would like to book a room y/n \n");
+//                    Utilities.displayAvailableRooms(newCheckInDate,newCheckOutDate);
+//
+//                    String option;
+//                    while(true){
+//                        option = scanner.next().toUpperCase();
+//                        scanner.nextLine();
+//                        if(!option.equals("Y") && !option.equals("N")){
+//                            System.out.println("Please enter Y or N.");
+//                        }else{
+//                            break;
+//                        }
+//                    }
+//                    if(option.equals("N")){
+//                        continueFlag = false;
+//                    }else if(option.equals("Y")){
+//                        reserveARoom(newCheckInDate,newCheckOutDate);
+//                        continueFlag = false;;
+//                    }
+//                }
+
+//    this way works perfectly, just ask customer for another date.
                 String option;
                 while(true){
                     System.out.println("Would you like to choose another date y/n");
                     option = scanner.next().toUpperCase();
+                    scanner.nextLine();
                     if(!option.equals("Y") && !option.equals("N")){
                         System.out.println("Please enter Y or N.");
                     }else{
                         break;
                     }
                 }
-
                 if(option.equals("N")){
                     continueFlag = false;
                 }else if(option.equals("Y")){
@@ -270,8 +309,14 @@ public class MainMenu {
                 System.out.println("Please enter a valid email format.");
             }
         }
-        Reservation reservation = hotelResource.getCustomerReservations(email);
-        System.out.println("Your reservation details as follows: ");
-        System.out.println(reservation);
+        if(hotelResource.getCustomerReservations(email).isEmpty()){
+            System.out.println("You currently have no reservations with us.");
+        }
+        List<Reservation> reservations = hotelResource.getCustomerReservations(email);
+        int counter = 1;
+        for(Reservation reservation : reservations){
+            System.out.println(counter + "." + " " + reservation);
+            counter++;
+        }
     }
 }

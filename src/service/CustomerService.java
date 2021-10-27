@@ -2,16 +2,11 @@ package service;
 
 import model.Customer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Callable;
+import java.util.*;
 
 public class CustomerService {
 
-    Collection<Customer> customers = new HashSet<Customer>();
+    Map<String,Customer> customers = new HashMap<>();
     private static CustomerService customerService;
 
 
@@ -28,22 +23,20 @@ public class CustomerService {
 
     public void addCustomer(String email, String firstname, String lastname){
        Customer newCustomer = new Customer(email,firstname,lastname);
-       customers.add(newCustomer);
+       customers.put(email,newCustomer);
     }
 
     //retrieve a customer from the map by email
     public Customer getCustomer(String customerEmail){
-       for(Customer customer : customers){
-           if(customer.getEmail().equals(customerEmail)){
-               return customer;
-           }
-           return null;
+       if(customers.containsKey(customerEmail)){
+               return customers.get(customerEmail);
        }
        return null;
     }
 
    public Collection<Customer> getAllCustomers(){
-        return customers;
+        Collection<Customer> allCustomers = customers.values();
+        return allCustomers;
    }
 
 

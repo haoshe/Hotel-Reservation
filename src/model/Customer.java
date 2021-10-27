@@ -1,6 +1,5 @@
 package model;
 
-import java.util.regex.Pattern;
 
 public class Customer {
     private String firstName;
@@ -10,11 +9,6 @@ public class Customer {
     public Customer(String email, String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-//        String emailRegEx = "^(.+)@(.+).com$";
-//        Pattern pattern = Pattern.compile(emailRegEx);
-//        if(!pattern.matcher(email).matches()){
-//            throw new IllegalArgumentException("please fill in valid email address");
-//        }
         this.email = email;
     }
 
@@ -44,6 +38,6 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "First Name: " + firstName + ", Last Name: " + lastName + ", Email : " + email + "\n";
+        return "First Name: " + firstName + ",  Last Name: " + lastName + ",  Email : " + email + "\n";
     }
 }

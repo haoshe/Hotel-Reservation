@@ -7,18 +7,18 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class ReservationService {
-    /**
+    /*
      * The ReservationService is not only responsible for making the reservation, but also for
      * adding and listing the rooms.
      */
 
     // all rooms in the hotel
     public static Collection<IRoom> rooms = new HashSet<>();
-
     // a list of available rooms according to user's input check in and checkout dates
     public static Set<IRoom> availableRooms = new HashSet<>();
+    // already reserved rooms list
+    private static Set<Reservation> reservations = new HashSet<>();
 
-    private static Set<Reservation> reservations = new HashSet<>();// already reserved rooms list
     private static Reservation reservedRoom;
     private static ReservationService reservationService;
 
@@ -31,22 +31,22 @@ public class ReservationService {
         return reservationService;
     }
 
-    /**
+    /*
      * It is responsible for adding only one room in the collection that will contain all the rooms in the application, being this the reason
      * why the method receives IRoom instead of Reservation.
      *
-     * @param room
+     *
      */
     public boolean addRoom(IRoom room){
        rooms.add(room);
        return true;
     }
 
-    /**
+    /*
      * Returns a room from the collection rooms, giving the roomId that was passed.
      *
-     * @param roomId
-     * @return
+     *
+     *
      */
     public IRoom getARoom(String roomId){
         for(IRoom room :rooms){
@@ -70,6 +70,8 @@ public class ReservationService {
         for(IRoom room : rooms){
             if(!isReserved(room,checkInDate,checkOutDate)){
                 availableRooms.add(room);
+            }else{
+                availableRooms.remove(room);
             }
         }
         return availableRooms;
@@ -85,44 +87,41 @@ public class ReservationService {
         // check if the room is in the reserved list
         // first check the dates, if the input check out date is before the reserved check in date,
         // or the input check in date is after the reserved check out date
-        // it means the room in the reservation list is available for the input dates.
+        // it means the room is available for the input dates, even it is in the reservation list.
         if(!reservations.isEmpty()){
             for(Reservation reservation : reservations) {
                 if(reservation.getRoom().equals(room)){
-                    LocalDateTime resevredCheckInDate = Utilities.convertToLocalDateTimeViaInstant(reservation.getCheckInDate());
+                    LocalDateTime reservedCheckInDate = Utilities.convertToLocalDateTimeViaInstant(reservation.getCheckInDate());
                     LocalDateTime reservedCheckOutDate = Utilities.convertToLocalDateTimeViaInstant(reservation.getCheckOutDate());
                     LocalDateTime checkIn = Utilities.convertToLocalDateTimeViaInstant(checkInDate);
                     LocalDateTime checkOut = Utilities.convertToLocalDateTimeViaInstant(checkOutDate);
-                    if (checkOut.isBefore(resevredCheckInDate) || checkIn.isAfter(reservedCheckOutDate)) {
+                    if (checkOut.isBefore(reservedCheckInDate) || checkIn.isAfter(reservedCheckOutDate)) {
                         return false;//is not reserved
                     }
                     return true; // is reserved
-                }else{
-                    return false;
                 }
             }
         }
-
         return false;// reservation list is empty, so is not reserved
     }
 
-    public Reservation getCustomerReservation(String email){
-        // CustomerService.getInstance().getCustomer(customer.getEmail());
+    public List<Reservation> getCustomerReservation(String email){
+List<Reservation> customerReservations = new ArrayList<>();
         for(Reservation reservation : reservations){
             if(reservation.getCustomer().getEmail().equals(email)){
-                return reservation;
+                customerReservations.add(reservation);
             }
         }
-         return null;
+         return customerReservations;
     }
 
     public static Collection<IRoom> getAllRooms(){
         return rooms;
     }
 
-    public void printAllReservation(){
-        for(Reservation reservation : reservations){
-            System.out.println(reservation);
-        }
+
+    public Set<Reservation> getAllReservations(){
+        return reservations;
     }
+
 }

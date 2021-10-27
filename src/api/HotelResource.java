@@ -6,10 +6,7 @@ import model.Reservation;
 import service.CustomerService;
 import service.ReservationService;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 public class HotelResource {
 
@@ -45,8 +42,7 @@ public class HotelResource {
         return reservationService.reserveARoom(customer, room,checkedInDate,checkedOutDate);
     }
 
-    public Reservation getCustomerReservations(String customerEmail){
-       // Customer customer = hotelResource.getCustomer(customerEmail);
+    public List<Reservation> getCustomerReservations(String customerEmail){
         return reservationService.getCustomerReservation(customerEmail);
     }
 

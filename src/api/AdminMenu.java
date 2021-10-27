@@ -1,15 +1,12 @@
 package api;
 
-import model.IRoom;
-import model.Room;
-import model.RoomType;
+import model.*;
 import service.CustomerService;
 import service.ReservationService;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
+
 import utilities.*;
 
 public class AdminMenu {
@@ -33,9 +30,19 @@ public class AdminMenu {
         boolean quit = false;
         int option;
         while(!quit){
-            scanner = new Scanner(System.in);
-            option = scanner.nextInt();
-            scanner.nextLine();
+
+            while(true){
+                Scanner scanner = new Scanner(System.in);
+                boolean isInt = scanner.hasNextInt();
+                if(isInt){
+                    option = scanner.nextInt();
+                    scanner.nextLine();
+                    break;
+                }
+                option = 7;// if input is not a int, assign a number larger than 6, so the default case can catch it.
+                scanner.nextLine();
+                break;
+            }
 
             switch (option){
                 case 1:
@@ -56,7 +63,8 @@ public class AdminMenu {
                     quit = true;
                     break;
                 case 5:
-                    System.out.println("the method not finished yet");
+                    System.out.println("I don't know what this option for.");
+                    start();
                     break;
                 case 6:
                     quit = true;
@@ -71,7 +79,6 @@ public class AdminMenu {
 
     private static void createIRoom(){
 
-        //ArrayList<IRoom> roomList = new ArrayList<>();
         boolean addAnotherRoom = true;
 
         while(addAnotherRoom){
@@ -155,7 +162,7 @@ public class AdminMenu {
             while(true){
                 System.out.println("Would you like to add another room y/n");
                 continueFlag = scanner.next().toUpperCase();
-                System.out.println(continueFlag);
+                //System.out.println(continueFlag);
                 if(!continueFlag.equals("Y") && !continueFlag.equals("N")){
                     System.out.println("Please enter Y or N.");
                 }else{
@@ -172,14 +179,43 @@ public class AdminMenu {
     }
 
     private static void printAllRooms(){
-        System.out.println(adminResource.getAllRooms());
+        //System.out.println(adminResource.getAllRooms());
+        if(adminResource.getAllRooms().isEmpty()){
+            System.out.println("There are currently no rooms in the database.");
+            return;
+        }
+        Collection<IRoom> rooms = adminResource.getAllRooms();
+        int counter = 1;
+        for(IRoom room : rooms){
+            System.out.println(counter + "." + " " + room);
+            counter++;
+        }
     }
 
     private static void displayAllCustomers(){
-        adminResource.getAllCustomers();
+        if(adminResource.getAllCustomers().isEmpty()){
+            System.out.println("There are currently no customers in the database.");
+            return;
+        }
+        Collection<Customer> customers = adminResource.getAllCustomers();
+        int counter = 1;
+        for(Customer customer : customers){
+            System.out.println(counter + "." + " " + customer);
+            counter++;
+        }
     }
 
     private static void displayAllReservations(){
-        adminResource.displayAllReservations();
+        if(adminResource.getAllReservations().isEmpty()){
+            System.out.println("There are currently no reservations in the database.");
+            return;
+        }
+        Set<Reservation> reservations = adminResource.getAllReservations();
+        int counter = 1;
+        for(Reservation reservation : reservations){
+            System.out.println(counter + "." + " " + reservation);
+            counter++;
+        }
+
     }
 }

@@ -2,7 +2,6 @@ package utilities;
 
 import api.AdminResource;
 import api.HotelResource;
-import com.sun.jdi.InvalidTypeException;
 import model.IRoom;
 import service.CustomerService;
 import service.ReservationService;
@@ -24,6 +23,7 @@ public class Utilities {
     private static final CustomerService customerService = CustomerService.getInstance();
     private static final HotelResource hotelResource = HotelResource.getInstance();
     private static final ReservationService reservationService = ReservationService.getInstance();
+    // get it from Udacity mentor help Q&A platform
     private static final DateTimeFormatter dateFormat = new DateTimeFormatterBuilder()
             .parseStrict()
             .appendPattern("MM/dd/uuuu")
@@ -121,15 +121,23 @@ public class Utilities {
     }
 
     // convert date type to localDateTime type
+    // get if from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
     public static LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
     }
 
-    // convert localDateTime type to date type
+    // convert localDate type to date type
+    // get if from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
     public static Date convertToDateViaSqlDate(LocalDate dateToConvert) {
         return java.sql.Date.valueOf(dateToConvert);
+    }
+
+    // convert localDateTime type to date type
+    // get it from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
+    public static Date convertToDateViaSqlTimestamp(LocalDateTime dateToConvert) {
+        return java.sql.Timestamp.valueOf(dateToConvert);
     }
 
     // check if check in date is before today's date.
@@ -142,13 +150,19 @@ public class Utilities {
         return false;
     }
 
-    // check if check out date is before check in date
+    // check if check out date is before or equal to check in date
     public static boolean isCheckOutDateValid(Date checkIn,Date checkOut){
         LocalDateTime checkInDate = convertToLocalDateTimeViaInstant(checkIn);
         LocalDateTime checkOutDate = convertToLocalDateTimeViaInstant(checkOut);
-        if(checkOutDate.isBefore(checkInDate)){
+        if(checkOutDate.isBefore(checkInDate) || checkOutDate.isEqual(checkInDate)){
             return false;
         }
         return true;
+    }
+
+    // plus 7 days to user input date
+    public static Date plus7DaysToInputDate(Date date){
+        LocalDateTime newDate = convertToLocalDateTimeViaInstant(date);
+        return convertToDateViaSqlTimestamp(newDate.plusDays(7));
     }
 }
