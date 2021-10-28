@@ -164,51 +164,56 @@ public class MainMenu {
                 continueFlag = false;
             }else{
                 System.out.println("There is no room available within your chosen dates.\n\n");
+                System.out.println("old check in date: " + checkInDate);
+                System.out.println("old check out date: " + checkOutDate);
 
+                // if there are no available rooms within chosen dates, display any rooms available 7 days after. if there is none, the
+                // system will not return any rooms.
+                Date newCheckInDate = Utilities.plus7DaysToInputDate(checkInDate);
+                Date newCheckOutDate = Utilities.plus7DaysToInputDate(checkOutDate);
+                System.out.println("new checkin " + newCheckInDate);
+                System.out.println("new checkout " + newCheckOutDate);
+                if(Utilities.isRoomAvailable(newCheckInDate,newCheckOutDate)){
+                    System.out.println("These rooms are available from "+newCheckInDate+" to " + newCheckOutDate + ", would like to book a room y/n \n");
+                    Utilities.displayAvailableRooms(newCheckInDate,newCheckOutDate);
 
+                    String option;
+                    while(true){
+                        option = scanner.next().toUpperCase();
+                        scanner.nextLine();
+                        if(!option.equals("Y") && !option.equals("N")){
+                            System.out.println("Please enter Y or N.");
+                        }else{
+                            break;
+                        }
+                    }
+                    if(option.equals("N")){
+                        continueFlag = false;
+                    }else if(option.equals("Y")){
+                        reserveARoom(newCheckInDate,newCheckOutDate);
+                        continueFlag = false;;
+                    }
+                }else{
+                    continueFlag = false;
+                }
 
- // This part of code for booking rooms 7 days later has a bug. the room keeps showing up even it has been reserved. I can't fix it.
-//                Date newCheckInDate = Utilities.plus7DaysToInputDate(checkInDate);
-//                Date newCheckOutDate = Utilities.plus7DaysToInputDate(checkOutDate);
-//                if(Utilities.isRoomAvailable(newCheckInDate,newCheckOutDate)){
-//                    System.out.println("These rooms are available from "+newCheckInDate+" to " + newCheckOutDate + ", would like to book a room y/n \n");
-//                    Utilities.displayAvailableRooms(newCheckInDate,newCheckOutDate);
-//
-//                    String option;
-//                    while(true){
-//                        option = scanner.next().toUpperCase();
-//                        scanner.nextLine();
-//                        if(!option.equals("Y") && !option.equals("N")){
-//                            System.out.println("Please enter Y or N.");
-//                        }else{
-//                            break;
-//                        }
-//                    }
-//                    if(option.equals("N")){
-//                        continueFlag = false;
-//                    }else if(option.equals("Y")){
-//                        reserveARoom(newCheckInDate,newCheckOutDate);
-//                        continueFlag = false;;
+//    this is another option if there is no available rooms within the chosen dates, the system will ask customer for another date.
+//                String option;
+//                while(true){
+//                    System.out.println("Would you like to choose another date y/n");
+//                    option = scanner.next().toUpperCase();
+//                    scanner.nextLine();
+//                    if(!option.equals("Y") && !option.equals("N")){
+//                        System.out.println("Please enter Y or N.");
+//                    }else{
+//                        break;
 //                    }
 //                }
-
-//    this way works perfectly, just ask customer for another date.
-                String option;
-                while(true){
-                    System.out.println("Would you like to choose another date y/n");
-                    option = scanner.next().toUpperCase();
-                    scanner.nextLine();
-                    if(!option.equals("Y") && !option.equals("N")){
-                        System.out.println("Please enter Y or N.");
-                    }else{
-                        break;
-                    }
-                }
-                if(option.equals("N")){
-                    continueFlag = false;
-                }else if(option.equals("Y")){
-                    continue;
-                }
+//                if(option.equals("N")){
+//                    continueFlag = false;
+//                }else if(option.equals("Y")){
+//                    continue;
+//                }
             }
         }
     }
@@ -271,7 +276,7 @@ public class MainMenu {
                        System.out.println("Please type room number you would like to reserve:");
                        String roomNumber = scanner.nextLine();
                        // check if the room number typed in matches the available room numbers
-                       if(Utilities.doesRoomNumberExist(roomNumber)){
+                       if(Utilities.doesRoomNumberExist(roomNumber,checkInDate,checkOutDate)){
                            room = hotelResource.getRoom(roomNumber);
                            break;
                        }else{

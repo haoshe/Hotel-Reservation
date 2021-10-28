@@ -72,8 +72,8 @@ public class Utilities {
     }
 
     // find out if the input room number is in the available rooms list
-    public static boolean doesRoomNumberExist(String number){
-        Set<IRoom> availableRooms = reservationService.findAvailableRooms();
+    public static boolean doesRoomNumberExist(String number, Date checkIn, Date checkOut){
+        Collection<IRoom> availableRooms = reservationService.findAvailableRooms(checkIn,checkOut);
         for(IRoom availableRoom : availableRooms){
             if(availableRoom.getRoomNumber().equals(number)){
                 return true;
@@ -95,7 +95,7 @@ public class Utilities {
 
     // display all rooms available judging by check in and check out dates.
     public static void displayAvailableRooms(Date checkInDate, Date checkOutDate){
-        Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate,checkOutDate);
+        Collection<IRoom> availableRooms = hotelResource.findAvailableRooms(checkInDate,checkOutDate);
         for(IRoom availableRoom : availableRooms){
             System.out.println(availableRoom);
         }
@@ -103,7 +103,7 @@ public class Utilities {
 
     // check if there is any rooms available.
     public static boolean isRoomAvailable(Date checkInDate, Date checkOutDate){
-        Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate,checkOutDate);
+        Collection<IRoom> availableRooms = hotelResource.findAvailableRooms(checkInDate,checkOutDate);
         if(availableRooms.isEmpty()){
             return false;
         }
@@ -121,7 +121,7 @@ public class Utilities {
     }
 
     // convert date type to localDateTime type
-    // get if from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
+    // get it from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
     public static LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
@@ -129,7 +129,7 @@ public class Utilities {
     }
 
     // convert localDate type to date type
-    // get if from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
+    // get it from https://www.baeldung.com/java-date-to-localdate-and-localdatetime
     public static Date convertToDateViaSqlDate(LocalDate dateToConvert) {
         return java.sql.Date.valueOf(dateToConvert);
     }

@@ -46,11 +46,11 @@ public class HotelResource {
         return reservationService.getCustomerReservation(customerEmail);
     }
 
-    public Collection<IRoom> findARoom(Date checkIn, Date checkOut){
-        return reservationService.findRooms(checkIn,checkOut);
+    public Collection<IRoom> findAvailableRooms(Date checkIn, Date checkOut){
+        return reservationService.findAvailableRooms(checkIn,checkOut);
     }
 
-    public Set<IRoom> getAvailableRooms(){
-        return reservationService.findAvailableRooms();
-    }
+//    public Set<IRoom> getAvailableRooms(){
+//        return reservationService.findAvailableRooms();
+//    }
 }

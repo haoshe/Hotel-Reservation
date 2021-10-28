@@ -1,30 +1,21 @@
 package model;
 
 
+import utilities.Utilities;
+import java.util.Objects;
+
 public class Customer {
-    private String firstName;
-    private String lastName;
-    private String email;
+    private final String firstName;
+    private final String lastName;
+    private final String email;
 
     public Customer(String email, String firstName, String lastName) {
+        if(!Utilities.isEmailValid(email)){
+            throw new IllegalArgumentException("Email is not valid");
+        }else{
+            this.email = email;
+        }
         this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -32,8 +23,18 @@ public class Customer {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return firstName.equals(customer.firstName) && lastName.equals(customer.lastName) && email.equals(customer.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email);
     }
 
     @Override
